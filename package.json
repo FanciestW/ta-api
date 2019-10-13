@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node src/index.js",
+    "dev": "nodemon",
     "lint": "eslint .",
     "lint-fix": "eslint --fix ."
   },
@@ -16,6 +17,7 @@
     "serverless-http": "^2.3.0"
   },
   "devDependencies": {
-    "eslint": "^6.5.1"
+    "eslint": "^6.5.1",
+    "nodemon": "^1.19.3"
   }
 }
