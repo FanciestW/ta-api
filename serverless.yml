@@ -10,5 +10,8 @@ provider:
     Owner: 'wlin26@yahoo.com'
 
 functions:
-  hello:
-    handler: handler.hello
+  app:
+    handler: src.index.handler
+    events:
+        - http: ANY /
+        - http: 'ANY {proxy+}'
