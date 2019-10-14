@@ -2,6 +2,14 @@ service: ta-api
 app: ta-api
 org: fanciestw
 
+package:
+  exclude:
+    - node_modules/**
+    - nodemon.json
+    - README.md
+    - .vscode/**
+    - eslintrc.json
+
 provider:
   name: aws
   runtime: nodejs10.x
