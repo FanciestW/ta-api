@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 
-app.get('/events', function (req, res) {
+app.get('/events', (req, res) => {
     const APIKEY = process.env.CAL_API_KEY;
     if (!APIKEY) {
         return handleInternalError(req, res, 'Bad API Key', 'Unable to access Google Calendar API');
@@ -41,6 +41,10 @@ app.get('/events', function (req, res) {
         res.status(200).send({events: formattedEvents,});
     });
 });
+
+app.get('/announcements', (req, res) => {
+
+})
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 if (isInLambda) {
