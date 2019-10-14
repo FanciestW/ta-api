@@ -4,7 +4,6 @@ org: fanciestw
 
 package:
   exclude:
-    - node_modules/**
     - nodemon.json
     - README.md
     - .vscode/**

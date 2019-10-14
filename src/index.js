@@ -1,9 +1,13 @@
 const serverless = require('serverless-http');
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 const { google } = require('googleapis');
 const { handleInternalError } = require('./utils/errorHandler');
 require('dotenv').config();
+
+const PORT = process.env.PORT || 5000;
 
 app.get('/events', function (req, res) {
     const APIKEY = process.env.CAL_API_KEY;
@@ -15,6 +19,7 @@ app.get('/events', function (req, res) {
         calendarId: '0h3m4vqmstfon4fpsjj54st57k@group.calendar.google.com',
         auth: APIKEY,
         maxResults: 400,
+        singleEvents: true,
         timeMin: new Date(new Date().setMonth(new Date().getMonth() - 6)),
         timeMax: new Date(new Date().setMonth(new Date().getMonth() + 6))
     };
@@ -27,9 +32,10 @@ app.get('/events', function (req, res) {
         });
         const formattedEvents = events.map((event) => {
             return {
-                title: `${event.summary} ${event.location ? '@ ' + event.location : ''}`,
-                start: event.start.dateTime || '',
-                end: event.end.dateTime || '',
+                title: `${event.summary} ${!event.start.date ? event.location ? '\n' + event.location : '\nLibrary Café' : ''}`,
+                start: event.start.dateTime || event.start.date || '',
+                end: event.end.dateTime || event.end.date || '',
+                allDay: event.start.date ? true : false,
             };
         });
         res.status(200).send({events: formattedEvents,});
@@ -40,5 +46,5 @@ const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 if (isInLambda) {
     module.exports.handler = serverless(app);
 } else {
-    app.listen(3000, () => console.log('Listening on 3000'));
+    app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 }
