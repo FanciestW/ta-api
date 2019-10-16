@@ -5,9 +5,17 @@ const app = express();
 app.use(cors());
 const { google } = require('googleapis');
 const { handleInternalError } = require('./utils/errorHandler');
+const mongoose = require('mongoose');
+const Announcement = require('./models/Announcement.model');
 require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
+const DB_CONNECTION_STR = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PW}@ta-cluster-i0zdc.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+mongoose.connect(DB_CONNECTION_STR).then(() => {
+    console.log('Connected to MongoDB');
+}).catch(() => {
+    console.log('Failed to Connect to MongoDB');
+});
 
 app.get('/events', (req, res) => {
     const APIKEY = process.env.CAL_API_KEY;
@@ -43,8 +51,15 @@ app.get('/events', (req, res) => {
 });
 
 app.get('/announcements', (req, res) => {
-
-})
+    Announcement.find({}, (err, docs) => {
+        if (err) {
+            console.log('Error occurred in fetching announcements');
+            return res.sendStatus(500);
+        }
+        console.log(docs);
+        res.status(200).send(JSON.stringify(docs));
+    });
+});
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 if (isInLambda) {
