@@ -51,13 +51,13 @@ app.get('/events', (req, res) => {
 });
 
 app.get('/announcements', (req, res) => {
-    Announcement.find({}, (err, docs) => {
+    Announcement.find({expires: {$gt: Date.now()}}, null, {sort: {expires: -1 }}, (err, docs) => {
         if (err) {
             console.log('Error occurred in fetching announcements');
             return res.sendStatus(500);
         }
         console.log(docs);
-        res.status(200).send(JSON.stringify(docs));
+        res.status(200).send(JSON.stringify({announcements: docs}));
     });
 });
 
