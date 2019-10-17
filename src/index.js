@@ -57,7 +57,6 @@ app.get('/announcements', (req, res) => {
             console.log('Error occurred in fetching announcements.');
             return handleInternalError(req, res, 'Error Fetching Announcements', err);
         }
-        console.log(docs);
         res.status(200).send(JSON.stringify({announcements: docs}));
     });
 });

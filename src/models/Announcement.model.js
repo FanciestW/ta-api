@@ -5,7 +5,8 @@ const ObjectId = Schema.ObjectId;
 const AnnouncementSchema = new Schema({
     announcementId: ObjectId,
     title: String,
-    message: String,
+    message: { type: String, default: ''},
+    priority: { type: Number, default: 1 },
     expires: Date,
 }, { collection: 'announcements' });
 
