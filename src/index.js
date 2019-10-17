@@ -33,7 +33,8 @@ app.get('/events', (req, res) => {
     };
     calendar.events.list(eventsParams, function(gErr, gRes) {
         if (gErr) {
-            handleInternalError(req, res, 'Google Calendar Error', gErr);
+            console.log('Error occurred in fetching calendar events.');
+            return handleInternalError(req, res, 'Google Calendar Error', gErr);
         }
         const events = gRes.data.items.filter((event) => {
             return event.status == 'confirmed' && event.start && event.end;
@@ -53,8 +54,8 @@ app.get('/events', (req, res) => {
 app.get('/announcements', (req, res) => {
     Announcement.find({expires: {$gt: Date.now()}}, null, {sort: {expires: -1 }}, (err, docs) => {
         if (err) {
-            console.log('Error occurred in fetching announcements');
-            return res.sendStatus(500);
+            console.log('Error occurred in fetching announcements.');
+            return handleInternalError(req, res, 'Error Fetching Announcements', err);
         }
         console.log(docs);
         res.status(200).send(JSON.stringify({announcements: docs}));
