@@ -6,7 +6,7 @@ const AnnouncementSchema = new Schema({
     announcementId: ObjectId,
     title: String,
     message: { type: String, default: ''},
-    priority: { type: Number, default: 1 },
+    priority: { type: Number, default: 0 },
     expires: Date,
 }, { collection: 'announcements' });
 

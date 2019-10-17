@@ -52,7 +52,7 @@ app.get('/events', (req, res) => {
 });
 
 app.get('/announcements', (req, res) => {
-    Announcement.find({expires: {$gt: Date.now()}}, null, {sort: {expires: -1 }}, (err, docs) => {
+    Announcement.find({expires: {$gt: Date.now()}}, null, {sort: {priority: 1 }}, (err, docs) => {
         if (err) {
             console.log('Error occurred in fetching announcements.');
             return handleInternalError(req, res, 'Error Fetching Announcements', err);
