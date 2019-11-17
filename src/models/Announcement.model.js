@@ -8,6 +8,7 @@ const AnnouncementSchema = new Schema({
     message: { type: String, default: ''},
     priority: { type: Number, default: 0 },
     expires: Date,
+    starts: Date,
 }, { collection: 'announcements' });
 
 module.exports = mongoose.model('Announcement', AnnouncementSchema);
