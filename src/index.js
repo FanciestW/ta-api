@@ -11,7 +11,11 @@ require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 const DB_CONNECTION_STR = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PW}@ta-cluster-i0zdc.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
-mongoose.connect(DB_CONNECTION_STR).then(() => {
+const mongodbOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+};
+mongoose.connect(DB_CONNECTION_STR, mongodbOptions).then(() => {
     console.log('Connected to MongoDB');
 }).catch(() => {
     console.log('Failed to Connect to MongoDB');
