@@ -56,7 +56,7 @@ app.get('/events', (req, res) => {
 });
 
 app.get('/announcements', (req, res) => {
-    Announcement.find({$and: [{expires: {$gt: Date.now()}}, {starts: {$lt: Date.now()}}]}, null, {sort: {priority: 1 }}, (err, docs) => {
+    Announcement.find({$and: [{expires: {$gt: Date.now()}}, { $or: [ {starts: {$lt: Date.now()}}, {starts: null}]}]}, null, {sort: {priority: 1 }}, (err, docs) => {
         if (err) {
             console.log('Error occurred in fetching announcements.');
             return handleInternalError(req, res, 'Error Fetching Announcements', err);
