@@ -36,6 +36,7 @@ app.get('/events', (req, res) => {
         timeMax: new Date(new Date().setMonth(new Date().getMonth() + 6))
     };
     calendar.events.list(eventsParams, function(gErr, gRes) {
+        const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
         if (gErr) {
             console.log('Error occurred in fetching calendar events.');
             return handleInternalError(req, res, 'Google Calendar Error', gErr);
@@ -49,6 +50,7 @@ app.get('/events', (req, res) => {
                 start: event.start.dateTime || event.start.date || '',
                 end: event.end.dateTime || event.end.date || '',
                 allDay: event.start.date ? true : false,
+                url: event.location ? event.location.match(urlRegex) ? event.location : undefined : undefined,
             };
         });
         res.status(200).send({events: formattedEvents,});
