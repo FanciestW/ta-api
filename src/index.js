@@ -9,7 +9,6 @@ const mongoose = require('mongoose');
 const Announcement = require('./models/Announcement.model');
 require('dotenv').config();
 
-const PORT = process.env.PORT || 5000;
 const DB_CONNECTION_STR = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PW}@ta-cluster-i0zdc.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 const mongodbOptions = {
   useNewUrlParser: true,
@@ -71,5 +70,6 @@ const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 if (isInLambda) {
   module.exports.handler = serverless(app);
 } else {
+  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 }
