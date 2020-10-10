@@ -7,17 +7,17 @@
  * @returns {Response} The response that was sent.
  */
 function handleInternalError(req, res, error='Internal Error', errorDescription='No Description') {
-    return res.status(500).send(JSON.stringify({
-        error,
-        errorDescription,
-    }));
+  return res.status(500).send(JSON.stringify({
+    error,
+    errorDescription,
+  }));
 }
 
 function handleClientError(req, res, error='Bad Request', errorDescription='No Description') {
-    return res.status(400).send(JSON.stringify({
-        error,
-        errorDescription,
-    }));
+  return res.status(400).send(JSON.stringify({
+    error,
+    errorDescription,
+  }));
 }
 
 module.exports = { handleInternalError, handleClientError };
