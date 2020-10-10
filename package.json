@@ -11,17 +11,16 @@
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "debug": "~2.6.9",
     "dotenv": "^8.2.0",
-    "express": "~4.16.1",
-    "googleapis": "^39.2.0",
+    "express": "^4.17.1",
+    "googleapis": "^61.0.0",
     "mongoose": "^5.10.9",
-    "morgan": "~1.9.1",
+    "morgan": "^1.10.0",
     "serverless-http": "^2.6.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "nodemon": "^1.19.4",
+    "eslint": "^7.11.0",
+    "nodemon": "^2.0.4",
     "serverless-offline": "^6.8.0"
   }
 }
