@@ -20,19 +20,18 @@ provider:
     Owner: 'wlin26@yahoo.com'
 
 functions:
-  app:
-    handler: src/index.handler
-    timeout: 20
-    events:
-        - http: ANY /
-        - http: 'ANY {proxy+}'
-    tags:
-      App: TA-API
-
   ta-api-admin:
     name: 'ta-api-admin'
     description: 'Lambda function for admin features for the TA Site'
     runtime: nodejs12.x
-    handler: admin.handler
-    tags:
-      App: TA-API
+    handler: src/admin.handler
+    events:
+      - http: GET /api/announcements
+
+  app:
+    handler: src/index.handler
+    timeout: 20
+    events:
+        - http: GET /events
+        - http: GET /announcements
+        - http: 'ANY {proxy+}'
