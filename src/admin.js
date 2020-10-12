@@ -3,6 +3,8 @@ const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const nanoid = require('nanoid');
+const validator = require('validator');
 const Announcement = require('./models/Announcement.model');
 const { handleInternalError } = require('./utils/errorHandler');
 
@@ -28,6 +30,28 @@ app.get('/api/announcements', (req, res) => {
       return handleInternalError(req, res, 'Error Fetching Announcements', err);
     }
     res.status(200).send(JSON.stringify({announcements: docs}));
+  });
+});
+
+app.post('/api/announcements', async (req, res) => {
+  let announcementId = nanoid();
+  while (await Announcement.exists({ announcementId, })) {
+    announcementId = nanoid();  // Generate new annoucementId if already in use.
+  }
+  const newAnnouncement = new Announcement({
+    announcementId,
+    title: validator.escape(req.body.title),
+    message: validator.escape(req.body.message),
+    priority: req.body.priority,
+    expires: req.body.expires,
+    starts: req.body.starts,
+  });
+  newAnnouncement.save((err) => {
+    if (err) {
+      res.status(500).send(`Failed with error: ${err}`);
+    } else {
+      res.sendStatus(200);
+    }
   });
 });
 
