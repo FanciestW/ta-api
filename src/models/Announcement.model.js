@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
 
 const AnnouncementSchema = new Schema({
-  announcementId: {type: ObjectId, unique: true},
   title: { type: String, required: true },
   message: { type: String, default: ''},
   priority: { type: Number, default: 0, min: 0, max: 2 },

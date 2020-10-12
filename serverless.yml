@@ -27,6 +27,7 @@ functions:
     handler: src/admin.handler
     events:
       - http: GET /api/announcements
+      - http: POST /api/announcements
 
   app:
     handler: src/index.handler

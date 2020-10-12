@@ -1,9 +1,10 @@
 require('dotenv').config();
 const serverless = require('serverless-http');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+app.use(bodyParser.json());
 const mongoose = require('mongoose');
-const nanoid = require('nanoid');
 const validator = require('validator');
 const Announcement = require('./models/Announcement.model');
 const { handleInternalError } = require('./utils/errorHandler');
@@ -24,22 +25,17 @@ mongoose.connect(DB_CONNECTION_STR, mongoDBOptions).then(() => {
 });
 
 app.get('/api/announcements', (req, res) => {
-  Announcement.find({$and: [{expires: {$gt: Date.now()}}, { $or: [ {starts: {$lt: Date.now()}}, {starts: null}]}]}, null, {sort: {priority: 1 }}, (err, docs) => {
+  Announcement.find({ $and: [{ expires: { $gt: Date.now() } }, { $or: [{ starts: { $lt: Date.now() } }, { starts: null }] }] }, null, { sort: { priority: 1 } }, (err, docs) => {
     if (err) {
       console.log('Error occurred in fetching announcements.');
       return handleInternalError(req, res, 'Error Fetching Announcements', err);
     }
-    res.status(200).send(JSON.stringify({announcements: docs}));
+    res.status(200).send(JSON.stringify({ announcements: docs }));
   });
 });
 
 app.post('/api/announcements', async (req, res) => {
-  let announcementId = nanoid();
-  while (await Announcement.exists({ announcementId, })) {
-    announcementId = nanoid();  // Generate new annoucementId if already in use.
-  }
   const newAnnouncement = new Announcement({
-    announcementId,
     title: validator.escape(req.body.title),
     message: validator.escape(req.body.message),
     priority: req.body.priority,
