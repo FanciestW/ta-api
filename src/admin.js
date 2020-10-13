@@ -10,7 +10,7 @@ const validator = require('validator');
 const Announcement = require('./models/Announcement.model');
 const { handleInternalError } = require('./utils/errorHandler');
 
-function connectDB(req, _res, next) {
+function connectDB(_req, res, next) {
   const mongoUser = process.env.MONGODB_READ_WRITE_USER;
   const mongoPW = process.env.MONGODB_READ_WRITE_PW;
   const mongoCluster = process.env.MONGODB_CLUSTER;
@@ -25,7 +25,7 @@ function connectDB(req, _res, next) {
     next();
   }).catch((err) => {
     console.log(`Failed to connect to MongoDB with error: ${err}`);
-    return req.sendStatus(500);
+    return res.sendStatus(500);
   });
 }
 
