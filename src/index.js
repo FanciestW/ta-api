@@ -3,28 +3,31 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 app.use(cors());
+app.use(connectDB);
 const { google } = require('googleapis');
 const { handleInternalError } = require('./utils/errorHandler');
 const mongoose = require('mongoose');
 const Announcement = require('./models/Announcement.model');
 require('dotenv').config();
 
-const mongoUser = process.env.MONGODB_READ_WRITE_USER;
-const mongoPW = process.env.MONGODB_READ_WRITE_PW;
-const mongoCluster = process.env.MONGODB_CLUSTER;
-const mongoDB = process.env.MONGODB_DB;
-const DB_CONNECTION_STR = `mongodb+srv://${mongoUser}:${mongoPW}@${mongoCluster}/${mongoDB}?retryWrites=true&w=majority`;
-const mongodbOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-mongoose.connect(DB_CONNECTION_STR, mongodbOptions).then(() => {
-  console.log('Connected to MongoDB');
-}).catch(() => {
-  console.log('Failed to Connect to MongoDB');
-  return;
-});
-
+function connectDB(_req, res, next) {
+  const mongoUser = process.env.MONGODB_READ_WRITE_USER;
+  const mongoPW = process.env.MONGODB_READ_WRITE_PW;
+  const mongoCluster = process.env.MONGODB_CLUSTER;
+  const mongoDB = process.env.MONGODB_DB;
+  const DB_CONNECTION_STR = `mongodb+srv://${mongoUser}:${mongoPW}@${mongoCluster}/${mongoDB}?retryWrites=true&w=majority`;
+  const mongodbOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  };
+  mongoose.connect(DB_CONNECTION_STR, mongodbOptions).then(() => {
+    console.log('Connected to MongoDB');
+    next();
+  }).catch(() => {
+    console.log('Failed to Connect to MongoDB');
+    return res.sendStatus(500);
+  });
+}
 app.get('/events', (req, res) => {
   const APIKEY = process.env.CAL_API_KEY;
   if (!APIKEY) {
