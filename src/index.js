@@ -9,7 +9,11 @@ const mongoose = require('mongoose');
 const Announcement = require('./models/Announcement.model');
 require('dotenv').config();
 
-const DB_CONNECTION_STR = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PW}@ta-cluster-i0zdc.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+const mongoUser = process.env.MONGODB_READ_WRITE_USER;
+const mongoPW = process.env.MONGODB_READ_WRITE_PW;
+const mongoCluster = process.env.MONGODB_CLUSTER;
+const mongoDB = process.env.MONGODB_DB;
+const DB_CONNECTION_STR = `mongodb+srv://${mongoUser}:${mongoPW}@${mongoCluster}/${mongoDB}?retryWrites=true&w=majority`;
 const mongodbOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -18,6 +22,7 @@ mongoose.connect(DB_CONNECTION_STR, mongodbOptions).then(() => {
   console.log('Connected to MongoDB');
 }).catch(() => {
   console.log('Failed to Connect to MongoDB');
+  return;
 });
 
 app.get('/events', (req, res) => {

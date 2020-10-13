@@ -4,25 +4,30 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
+app.use(connectDB);
 const mongoose = require('mongoose');
 const validator = require('validator');
 const Announcement = require('./models/Announcement.model');
 const { handleInternalError } = require('./utils/errorHandler');
 
-const mongoUser = process.env.ENV === 'prod' ? process.env.MONGODB_ANNOUNCEMENT_READ_WRITE_USER : process.env.MONGODB_ANNOUNCEMENT_DEV_READ_WRITE_USER;
-const mongoPW = process.env.ENV == 'prod' ? process.env.MONGODB_ANNOUNCEMENT_READ_WRITE_PW : process.env.MONGODB_ANNOUNCEMENT_DEV_READ_WRITE_PW;
-const mongoCluster = process.env.MONGO_CLUSTER;
-const mongoDB = process.env.ENV == 'prod' ? process.env.MONGODB_DB || 'ta' : process.env.MONGODB_DB_DEV || 'ta-dev';
-const DB_CONNECTION_STR = `mongodb+srv://${mongoUser}:${mongoPW}@${mongoCluster}/${mongoDB}?retryWrites=true&w=majority`;
-const mongoDBOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-mongoose.connect(DB_CONNECTION_STR, mongoDBOptions).then(() => {
-  console.log('Connected to MongoDB');
-}).catch((err) => {
-  console.log(`Failed to connect to MongoDB with error: ${err}`);
-});
+function connectDB(req, _res, next) {
+  const mongoUser = process.env.MONGODB_READ_WRITE_USER;
+  const mongoPW = process.env.MONGODB_READ_WRITE_PW;
+  const mongoCluster = process.env.MONGODB_CLUSTER;
+  const mongoDB = process.env.MONGODB_DB;
+  const DB_CONNECTION_STR = `mongodb+srv://${mongoUser}:${mongoPW}@${mongoCluster}/${mongoDB}?retryWrites=true&w=majority`;
+  const mongoDBOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  };
+  mongoose.connect(DB_CONNECTION_STR, mongoDBOptions).then(() => {
+    console.log('Connected to MongoDB');
+    next();
+  }).catch((err) => {
+    console.log(`Failed to connect to MongoDB with error: ${err}`);
+    return req.sendStatus(500);
+  });
+}
 
 app.get('/api/announcements', (req, res) => {
   Announcement.find({ $and: [{ expires: { $gt: Date.now() } }, { $or: [{ starts: { $lt: Date.now() } }, { starts: null }] }] }, null, { sort: { priority: 1 } }, (err, docs) => {

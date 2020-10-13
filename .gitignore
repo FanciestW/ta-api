@@ -1,4 +1,6 @@
 **/*.env
+**/.env*
+env.*.json
 
 # package directories
 node_modules

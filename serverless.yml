@@ -4,6 +4,7 @@ org: fanciestw
 
 plugins:
   - serverless-offline
+  - serverless-dotenv-plugin
 
 package:
   exclude:
@@ -15,9 +16,15 @@ package:
 provider:
   name: aws
   runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'}
+  apiKeys:
+    - adminAPIKey
   tags:
     AppName: 'ta-api'
     Owner: 'wlin26@yahoo.com'
+  environment:
+    MONGODB_CLUSTER: ${env:MONGODB_CLUSTER}
+    MONGODB_DB: ${env:MONGODB_DB}
 
 functions:
   ta-api-admin:
@@ -25,14 +32,26 @@ functions:
     description: 'Lambda function for admin features for the TA Site'
     runtime: nodejs12.x
     handler: src/admin.handler
+    timeout: 20
+    private: true
     events:
       - http: GET /api/announcements
       - http: POST /api/announcements
+    environment:
+      MONGODB_READ_WRITE_USER: ${env:MONGODB_READ_WRITE_USER}
+      MONGODB_READ_WRITE_PW: ${env:MONGODB_READ_WRITE_PW}
 
-  app:
+  ta-api-user:
+    name: 'ta-api-user'
+    desecription: 'Lambda function for user to retreive TA site data'
+    runtime: nodejs12.x
     handler: src/index.handler
     timeout: 20
+    private: false
     events:
         - http: GET /events
         - http: GET /announcements
-        - http: 'ANY {proxy+}'
+    environment:
+      CAL_API_KEY: ${env:CAL_API_KEY}
+      MONGODB_READ_ONLY_USER: ${env:MONGODB_READ_ONLY_USER}
+      MONGODB_READ_ONLY_PW: ${env:MONGODB_READ_ONLY_PW}
