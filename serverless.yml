@@ -33,24 +33,34 @@ functions:
     runtime: nodejs12.x
     handler: src/admin.handler
     timeout: 20
-    private: true
     events:
-      - http: GET /api/announcements
-      - http: POST /api/announcements
+      - http: 
+          method: GET
+          path: /api/announcements
+          private: true
+      - http: 
+          method: POST
+          path: /api/announcements
+          private: true
     environment:
       MONGODB_READ_WRITE_USER: ${env:MONGODB_READ_WRITE_USER}
       MONGODB_READ_WRITE_PW: ${env:MONGODB_READ_WRITE_PW}
 
   ta-api-user:
     name: 'ta-api-user'
-    desecription: 'Lambda function for user to retreive TA site data'
+    description: 'Lambda function for user to retreive TA site data'
     runtime: nodejs12.x
     handler: src/index.handler
     timeout: 20
-    private: false
     events:
-        - http: GET /events
-        - http: GET /announcements
+        - http: 
+            method: GET
+            path: /events
+            private: false
+        - http: 
+            method: GET
+            path: /announcements
+            private: false
     environment:
       CAL_API_KEY: ${env:CAL_API_KEY}
       MONGODB_READ_ONLY_USER: ${env:MONGODB_READ_ONLY_USER}
